@@ -3,8 +3,6 @@ package com.redhat.lightblue.hibernate.ogm.config;
 import org.hibernate.ogm.cfg.OgmProperties;
 
 public interface LightblueClientProperties extends OgmProperties {
-    /* Non-standard */
-    public static final String PORT = "com.redhat.lightblue.port";
     public static final String PROTOCOL = "com.redhat.lightblue.protocol";
 
     /* Standard */
