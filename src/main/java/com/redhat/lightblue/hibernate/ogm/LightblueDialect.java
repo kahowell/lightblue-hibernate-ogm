@@ -15,7 +15,6 @@ import org.hibernate.engine.query.spi.ParameterMetadata;
 import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.ogm.dialect.query.spi.BackendQuery;
 import org.hibernate.ogm.dialect.query.spi.ClosableIterator;
-import org.hibernate.ogm.dialect.query.spi.NoOpParameterMetadataBuilder;
 import org.hibernate.ogm.dialect.query.spi.ParameterMetadataBuilder;
 import org.hibernate.ogm.dialect.query.spi.QueryableGridDialect;
 import org.hibernate.ogm.dialect.spi.AssociationContext;
@@ -32,7 +31,6 @@ import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.persister.entity.Lockable;
 import org.hibernate.type.StringType;
-import org.hibernate.type.Type;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,11 +44,10 @@ import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
-import com.redhat.lightblue.client.request.data.DataUpdateRequest;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.hibernate.ogm.LightblueTupleSnapshot.OperationType;
 
-public class LightblueDialect extends BaseGridDialect implements QueryableGridDialect<LightblueQueryDescriptor> {
+public class LightblueDialect extends BaseGridDialect implements QueryableGridDialect<String> {
 
     private LightblueDatastoreProvider provider;
 
@@ -165,12 +162,12 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
         throw new UnsupportedOperationException("not yet supported");
     }
 
-    public ClosableIterator<Tuple> executeBackendQuery(BackendQuery<LightblueQueryDescriptor> query, QueryParameters queryParameters) {
-        final String queryString = query.getQuery().query;
+    public ClosableIterator<Tuple> executeBackendQuery(BackendQuery<String> query, QueryParameters queryParameters) {
+        final String queryString = query.getQuery();
         String entityName = queryParameters.getNamedParameters().get("entityName").getValue().toString();
         String entityVersion = queryParameters.getNamedParameters().get("entityVersion").getValue().toString();
         DataFindRequest request = new DataFindRequest(entityName, entityVersion);
-        request.select(new FieldProjection("", true, true)); // FIXME dummy projection for broken client
+        request.select(new FieldProjection("*", true, true)); // FIXME dummy projection for broken client
         request.where(new Query() {
 
             public String toJson() {
@@ -215,8 +212,8 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
         };
     }
 
-    public LightblueQueryDescriptor parseNativeQuery(String nativeQuery) {
-        return new LightblueQueryDescriptor(nativeQuery);
+    public String parseNativeQuery(String nativeQuery) {
+        return nativeQuery;
     }
 
 }
