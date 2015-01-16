@@ -61,7 +61,7 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
     }
 
     public LockingStrategy getLockingStrategy(Lockable lockable, LockMode lockMode) {
-        throw new UnsupportedOperationException("lightblue does not support locking");
+        return null; // lightblue does not support locking
     }
 
     public Tuple getTuple(EntityKey key, TupleContext tupleContext) {

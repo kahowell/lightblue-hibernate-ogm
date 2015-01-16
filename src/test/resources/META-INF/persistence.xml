@@ -12,8 +12,9 @@
             <!-- defines which JTA Transaction we plan to use -->
             <property name="hibernate.transaction.jta.platform"
                       value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
-            <property name="hibernate.ogm.datastore.host" value="172.17.0.2"/>
-            <property name="hibernate.ogm.datastore.database" value="test"/>
+            <property name="hibernate.ogm.datastore.host" value="localhost"/>
+            <property name="com.redhat.lightblue.protocol" value="http"/>
+            <property name="com.redhat.lightblue.port" value="8080"/>
         </properties>
     </persistence-unit>
 </persistence>
