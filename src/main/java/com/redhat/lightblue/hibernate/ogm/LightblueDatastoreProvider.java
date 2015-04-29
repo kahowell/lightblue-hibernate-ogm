@@ -2,7 +2,6 @@ package com.redhat.lightblue.hibernate.ogm;
 
 import java.util.Map;
 
-import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.datastore.spi.BaseDatastoreProvider;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.service.spi.Configurable;
@@ -14,8 +13,11 @@ import com.redhat.lightblue.hibernate.ogm.config.LightblueClientProperties;
 
 public class LightblueDatastoreProvider extends BaseDatastoreProvider implements Configurable {
 
+    private static final long serialVersionUID = -6339184969088721584L;
+
     private LightblueClientConfiguration config;
 
+    @Override
     public Class<? extends GridDialect> getDefaultDialect() {
         return LightblueDialect.class;
     }
@@ -24,16 +26,25 @@ public class LightblueDatastoreProvider extends BaseDatastoreProvider implements
         return new LightblueHttpClient(config);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private String getOrDefault(Map config, String name, String defaultValue) {
+        String value = config.get(LightblueClientProperties.HOST).toString();
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+    @Override
+    @SuppressWarnings({"rawtypes"})
     public void configure(Map config) {
         String host = (String) config.get(LightblueClientProperties.HOST);
-        String port = (String) config.getOrDefault(LightblueClientProperties.PORT, "80");
-        String protocol = (String) config.getOrDefault(LightblueClientProperties.PROTOCOL, "https");
+        String port = getOrDefault(config, LightblueClientProperties.PORT, "80");
+        String protocol = getOrDefault(config, LightblueClientProperties.PROTOCOL, "https");
         String defaultMetadataServiceURI = String.format("%s://%s:%s/rest/metadata", protocol, host, port);
         String defaultDataServiceURI = String.format("%s://%s:%s/rest/data", protocol, host, port);
-        String metadataServiceURI = (String) config.getOrDefault(LightblueClientProperties.METADATA_SERVICE_URI, defaultMetadataServiceURI);
-        String dataServiceURI = (String) config.getOrDefault(LightblueClientProperties.DATA_SERVICE_URI, defaultDataServiceURI);
-        boolean useCertAuth = Boolean.parseBoolean((String) config.getOrDefault(LightblueClientProperties.USE_CERT_AUTH, "false"));
+        String metadataServiceURI = getOrDefault(config, LightblueClientProperties.METADATA_SERVICE_URI, defaultMetadataServiceURI);
+        String dataServiceURI = getOrDefault(config, LightblueClientProperties.DATA_SERVICE_URI, defaultDataServiceURI);
+        boolean useCertAuth = Boolean.parseBoolean(getOrDefault(config, LightblueClientProperties.USE_CERT_AUTH, "false"));
         String caFilePath = (String) config.get(LightblueClientProperties.CA_FILE_PATH);
         String certFilePath = (String) config.get(LightblueClientProperties.CERT_FILE_PATH);
         String certPassword = (String) config.get(LightblueClientProperties.CERT_PASSWORD);
