@@ -1,5 +1,6 @@
 package com.redhat.lightblue.hibernate.ogm;
 
+import static com.redhat.lightblue.util.JsonUtils.json;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -11,12 +12,23 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
+import com.redhat.lightblue.test.utils.AbstractCRUDControllerWithRest;
 
-public class PersistenceTest {
+public class PersistenceTest extends AbstractCRUDControllerWithRest {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("lightblue.jpa");
-    private EntityManager entityManager = entityManagerFactory.createEntityManager();
+    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+    public PersistenceTest() throws Exception {
+        super();
+    }
+
+    @Override
+    protected JsonNode[] getMetadataJsonNodes() throws Exception {
+        return new JsonNode[]{json(loadResource("/metadata/user.json", true))};
+    }
 
     public void persist(String id) {
         if (id == null) {
@@ -84,4 +96,5 @@ public class PersistenceTest {
         entityManager.flush();
         entityManager.getTransaction().commit();
     }
+
 }
