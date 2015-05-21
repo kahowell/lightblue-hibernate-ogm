@@ -27,7 +27,7 @@ public class LightblueDatastoreProvider extends BaseDatastoreProvider implements
     }
 
     private String getOrDefault(Map config, String name, String defaultValue) {
-        String value = config.get(LightblueClientProperties.HOST).toString();
+        String value = config.get(name).toString();
         if (value == null) {
             return defaultValue;
         }
