@@ -16,18 +16,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.jbossts</groupId>
-      <artifactId>jbossjta</artifactId>
-      <version>4.16.6.Final</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate.ogm</groupId>
       <artifactId>hibernate-ogm-core</artifactId>
       <version>4.1.3.Final</version>
@@ -53,10 +41,30 @@
       <artifactId>lightblue-client-http</artifactId>
       <version>1.4.0-SNAPSHOT</version>
     </dependency>
+    
+    <!-- Test Dependencies -->
     <dependency>
       <groupId>com.redhat.lightblue.test</groupId>
       <artifactId>lightblue-test-utils</artifactId>
       <version>1.4.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.jbossts</groupId>
+      <artifactId>jbossjta</artifactId>
+      <version>4.16.6.Final</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
