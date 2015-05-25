@@ -30,10 +30,7 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
         return new JsonNode[]{json(loadResource("/metadata/user.json", true))};
     }
 
-    public void persist(String id) {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
+    private void persist(String id) {
         entityManager.getTransaction().begin();
         User user = new User();
         user.setFirstName("bob");
@@ -45,34 +42,46 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
         entityManager.getTransaction().commit();
     }
 
-    private User fetch() {
-        User user = entityManager.find(User.class, "foo");
+    private User fetch(String id) {
+        User user = entityManager.find(User.class, id);
         return user;
     }
 
     @Test
     public void testPersistence() {
-        persist(null);
+        String id = UUID.randomUUID().toString();
+        persist(id);
     }
 
     @Test
     public void testRetrieval() {
         entityManager.getTransaction().begin();
-        User user = fetch();
-        assertEquals("bob", user.getFirstName());
-        User b = entityManager.find(User.class, "546feb01e4b0c4747d300299");
+        String id = UUID.randomUUID().toString();
+        User user = new User();
+        user.setFirstName("bob");
+        user.setUserId(id);
+        user.setLogin("root");
+        user.setNumberSites(3);
+        entityManager.persist(user);
+        entityManager.flush();
+        User user2 = entityManager.find(User.class, id);
+        assertEquals("bob", user2.getFirstName());
         entityManager.getTransaction().commit();
     }
 
     @Test
     public void testRetrieval_outsideSession() {
-        User user = fetch();
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = fetch(id);
         assertEquals("bob", user.getFirstName());
     }
 
     @Test
     public void testDeletion() {
-        User user = fetch();
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = entityManager.find(User.class, id);
         entityManager.remove(user);
     }
 
@@ -89,12 +98,17 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
 
     @Test
     public void testUpdate() {
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = fetch(id);
+        assertEquals("root", user.getLogin());
         entityManager.getTransaction().begin();
-        User user = fetch();
         user.setLogin(user.getLogin() + "!");
         entityManager.persist(user);
         entityManager.flush();
         entityManager.getTransaction().commit();
+        user = fetch(id);
+        assertEquals("root!", user.getLogin());
     }
 
 }

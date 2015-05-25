@@ -12,7 +12,7 @@ public class User {
     @Column(name = "_id")
     private String userId;
 
-    @Column(name = "personalInfo.firstName")
+    @Column(name = "firstName")
     private String firstName;
 
     @Column(name = "login")
