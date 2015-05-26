@@ -1,0 +1,32 @@
+{
+    "entityInfo": {
+        "name": "user",
+        "datastore": {
+            "backend":"mongo",
+            "collection": "user",
+            "datasource": "${mongo.datasource}"
+        }
+    },
+    "schema": {
+        "name": "user",
+        "version": {
+            "value": "1.0.0",
+            "changelog": "blahblah"
+        },
+        "status": {
+            "value": "active"
+        },
+        "access" : {
+             "insert": ["anyone"],
+             "update": ["anyone"],
+             "delete": ["anyone"],
+             "find": ["anyone"]
+        },
+        "fields": {
+            "_id": {"type": "string"},
+            "firstName": {"type": "string"},
+            "login": {"type": "string"},
+            "sites#": {"type": "integer"}
+        }
+    }
+}
