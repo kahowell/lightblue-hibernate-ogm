@@ -14,6 +14,9 @@
                     <releases>
                         <enabled>true</enabled>
                     </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </repository>
             </repositories>
             <pluginRepositories>
@@ -23,6 +26,9 @@
                     <releases>
                         <enabled>true</enabled>
                     </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
