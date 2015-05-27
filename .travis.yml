@@ -1,20 +1,20 @@
 language: java
 jdk:
-    - openjdk7
-    - oraclejdk8
+- openjdk7
+- oraclejdk8
 before_install:
-    - cp ./etc/settings.xml ~/.m2/
-    - cp ./etc/onFailure.sh  ~/
-    - cp ./etc/onSuccess.sh  ~/
-    - chmod 777 ~/onFailure.sh
-    - chmod 777 ~/onSuccess.sh
+- cp ./etc/settings.xml ~/.m2/
+- cp ./etc/onFailure.sh  ~/
+- cp ./etc/onSuccess.sh  ~/
+- chmod 777 ~/onFailure.sh
+- chmod 777 ~/onSuccess.sh
 script:
-    - mvn -B clean verify
+- mvn -B clean verify
 after_failure: ~/onFailure.sh
 after_success: ~/onSuccess.sh
 after_script:
-    - mvn -B cobertura:cobertura coveralls:report
+- mvn -B cobertura:cobertura coveralls:report
 env:
-    global:
-        - secure: KUsWgSyKeNX8dIs/lKdxsgsXub98d1pqSqEFuEGMEvrxGoFaB63B1zoIwYI5uzv67Ir36N0H7GVgeqYsELKaU8mMcRevd/FXkALuGyUdS8/pbiXVEYtDDdWZP1VYF/p4cm3+ZzvEIhqj8ZgLWeIlXpIRYm4WAsnDzrTEG93INgk=
-        - secure: q/2hWviyGa/Kr7zWes9f6gIW3rJ7xf7lh5tMFrtvNuhfEO4XRra+ZYG5yBHgvvLu+J/AaksmU4SBDmEY85GuLn5uh25s6OM9vwhnpJ9lz7FQ6jK6Jnm7IwMuHYIuTTXf5m702APingF73dkYijxgMnyOK9EEHE5/cWEgznOizY4=
+  global:
+  - secure: xoe4z+iXyz7zEcovpukNK01Tmj6uBB9qYBbZ0Z7GPgGcrSWFIFvikjG3PHgttTmgYMOt7sc4K3B9ChzP7FRRLIt+Yulk3HF1eJiqbZa4liUFpghiKKqgCFu5ST/cuYcWsZzxaHnlpmyzhD4VG86cb/3n+5J3vln2wSwsCKsKCRI=
+  - secure: OTUwUbIo3nnadqhjw+TsbYXjk2S3brZZP4shQplySe3hhSUFn5Crga6OtOF4PtVwwB4AkYx0hWxX66jd9zt4Irui8I7Bp9aDeu0K/xhkxM9tAxFpawOR1BY07A9iu9gdTpItSmP55A0zwHfWTa2/n9lhHVHCx3NODqDdwPdGGK4=
