@@ -3,6 +3,7 @@ package com.redhat.lightblue.hibernate.ogm.test.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -11,6 +12,7 @@ import org.hibernate.search.annotations.Store;
 
 @Entity
 @Indexed
+@Table(name="helicopter/1.0.0")
 public class Helicopter {	
 
 	private String uuid;

@@ -38,10 +38,13 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
         Helicopter heli = new Helicopter();
         heli.setMake("make");
         heli.setName("name");
-        heli.setUUID(UUID.randomUUID().toString());
+        String id = UUID.randomUUID().toString();
+        heli.setUUID(id);
         entityManager.persist(heli);
         entityManager.flush();
         entityManager.getTransaction().commit();
+        
+        System.out.println("helicopter>>>"+entityManager.find(Helicopter.class, id));
     }
 
     private void persist(String id) {
