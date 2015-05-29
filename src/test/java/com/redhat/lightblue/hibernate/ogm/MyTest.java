@@ -11,7 +11,8 @@ public class MyTest extends AbstractLightblueOgmTestCase {
     @Override
     protected Class<?>[] getAnnotatedClasses() {
         return new Class<?>[]{
-                Horse.class
+                Horse.class,
+                Cavalier.class
         };
     }
 
