@@ -1,27 +1,25 @@
 package com.redhat.lightblue.hibernate.ogm;
 
-import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static com.redhat.lightblue.client.expression.query.NaryLogicalQuery.and;
 import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import static com.redhat.lightblue.client.projection.FieldProjection.includeFieldRecursively;
-import static org.junit.Assert.*;
+import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
+import static org.junit.Assert.assertEquals;
 
-import com.redhat.lightblue.client.expression.query.Query;
-import com.redhat.lightblue.client.request.data.DataFindRequest;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueClient;
+import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.hibernate.ogm.LightblueOgmJUnitRunner.LightblueTestMethods;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
-import com.redhat.lightblue.mongo.test.MongoServerExternalResource.InMemoryMongoServer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@InMemoryMongoServer
 public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTestMethods {
 
     private LightblueClient client;
