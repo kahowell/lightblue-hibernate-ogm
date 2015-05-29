@@ -91,7 +91,7 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
         System.out.println(resultList);
     }
 
-    @Test
+    //@Test
     public void queryTest_jpql() {
         entityManager.createQuery("select user from User user where user.login = 'bserdar'").getResultList();
     }
