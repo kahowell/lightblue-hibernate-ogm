@@ -1,7 +1,13 @@
 package com.redhat.lightblue.hibernate.ogm;
 
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
+import static com.redhat.lightblue.client.expression.query.NaryLogicalQuery.and;
+import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
+import static com.redhat.lightblue.client.projection.FieldProjection.includeFieldRecursively;
+import static org.junit.Assert.*;
 
+import com.redhat.lightblue.client.expression.query.Query;
+import com.redhat.lightblue.client.request.data.DataFindRequest;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.Test;
@@ -11,6 +17,9 @@ import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.hibernate.ogm.LightblueOgmJUnitRunner.LightblueTestMethods;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
 import com.redhat.lightblue.mongo.test.MongoServerExternalResource.InMemoryMongoServer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @InMemoryMongoServer
 public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTestMethods {
@@ -49,6 +58,7 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         session.persist(user);
         transaction.commit();
         session.clear();
+
         transaction = session.beginTransaction();
         User retrievedUser = (User) session.get(User.class, user.getUserId());
         session.delete(retrievedUser);
@@ -56,6 +66,33 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         session.close();
         checkCleanCache();
 
+    }
+
+    @Override
+    protected void checkCleanCache() {
+        try {
+            assertEquals("There should be no entities left!", 0, getNumberOfEntities());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private int getNumberOfEntities() throws Exception {
+        JsonNode userMetadata = getMetadataJsonNodes()[0].get("schema");
+        String metadataVersion = userMetadata.get("version").get("value").asText();
+        String metadataType = userMetadata.get("name").asText();
+        DataFindRequest request = new DataFindRequest(metadataType, metadataVersion);
+        List<Query> conditions = new ArrayList<Query>();
+        conditions.add(withValue("firstName = frank"));
+        conditions.add(withValue("login = fjones"));
+        conditions.add(withValue("_id = 1234"));
+
+        request.where(and(conditions));
+        request.select(includeFieldRecursively("*"));
+
+        User[] users = client.data(request, User[].class);
+
+        return users.length;
     }
 
 }
