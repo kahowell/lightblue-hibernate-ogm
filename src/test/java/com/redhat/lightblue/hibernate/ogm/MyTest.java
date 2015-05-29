@@ -6,6 +6,9 @@ import org.hibernate.ogm.backendtck.associations.onetoone.Cavalier;
 import org.hibernate.ogm.backendtck.associations.onetoone.Horse;
 import org.junit.Test;
 
+import com.redhat.lightblue.mongo.test.MongoServerExternalResource.InMemoryMongoServer;
+
+@InMemoryMongoServer
 public class MyTest extends AbstractLightblueOgmTestCase {
 
     @Override
