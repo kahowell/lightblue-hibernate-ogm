@@ -63,8 +63,8 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         session.delete(retrievedUser);
         transaction.commit();
         session.close();
-        //checkCleanCache();
 
+        checkCleanCache();
     }
 
     @Override
@@ -83,7 +83,6 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
             throw new RuntimeException(e);
         }
     }
-
 
     private int getNumberOfEntities() throws Exception {
         JsonNode userMetadata = getMetadataJsonNodes()[0].get("schema");
