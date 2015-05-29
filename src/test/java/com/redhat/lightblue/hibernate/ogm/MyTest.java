@@ -58,6 +58,7 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         session.persist(user);
         transaction.commit();
         session.clear();
+        checkUserStored();
 
         transaction = session.beginTransaction();
         User retrievedUser = (User) session.get(User.class, user.getUserId());
@@ -76,6 +77,15 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
             throw new RuntimeException(e);
         }
     }
+
+    protected void checkUserStored() {
+        try {
+            assertEquals("There should a user persisted", 1, getNumberOfEntities());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private int getNumberOfEntities() throws Exception {
         JsonNode userMetadata = getMetadataJsonNodes()[0].get("schema");
