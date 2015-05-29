@@ -2,6 +2,7 @@ package com.redhat.lightblue.hibernate.ogm;
 
 import java.util.List;
 
+import org.hibernate.ogm.utils.OgmTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,7 +11,6 @@ import org.junit.ClassRule;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
 import org.junit.rules.TestRule;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
@@ -27,7 +27,7 @@ import com.redhat.lightblue.test.utils.AbstractCRUDControllerWithRest;
  *
  * @author dcrissman
  */
-public class LightblueJUnitRunner extends BlockJUnit4ClassRunner {
+public class LightblueOgmJUnitRunner extends OgmTestRunner {
 
     private ArtificialCRUDControllerWithRest controller;
 
@@ -45,7 +45,7 @@ public class LightblueJUnitRunner extends BlockJUnit4ClassRunner {
         JsonNode[] getMetadataJsonNodes() throws Exception;
     }
 
-    public LightblueJUnitRunner(Class<?> klass) throws InitializationError {
+    public LightblueOgmJUnitRunner(Class<?> klass) throws InitializationError {
         super(klass);
         controllerTestClass = new TestClass(ArtificialCRUDControllerWithRest.class);
     }
