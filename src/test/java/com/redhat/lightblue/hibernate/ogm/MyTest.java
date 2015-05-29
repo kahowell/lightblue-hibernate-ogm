@@ -44,11 +44,6 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         user.setNumberSites(2);
         user.setUserId("1234");
 
-        /*DataInsertRequest request = new DataInsertRequest("user", "1.0.0");
-        request.create(user);
-        request.returns(FieldProjection.includeFieldRecursively("*"));
-        client.data(request);*/
-
         final Session session = openSession();
         Transaction transaction = session.beginTransaction();
         session.persist(user);
