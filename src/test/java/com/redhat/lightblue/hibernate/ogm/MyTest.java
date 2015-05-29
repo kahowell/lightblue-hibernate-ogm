@@ -5,6 +5,7 @@ import static com.redhat.lightblue.client.expression.query.ValueQuery.withValue;
 import static com.redhat.lightblue.client.projection.FieldProjection.includeFieldRecursively;
 import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,8 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
 
         transaction = session.beginTransaction();
         User retrievedUser = (User) session.get(User.class, user.getUserId());
+        assertNotNull(retrievedUser);
+
         session.delete(retrievedUser);
         transaction.commit();
         session.close();
