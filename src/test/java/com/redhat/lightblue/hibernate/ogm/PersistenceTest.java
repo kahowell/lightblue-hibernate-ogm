@@ -8,11 +8,13 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.hibernate.ogm.test.model.Helicopter;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
 import com.redhat.lightblue.test.utils.AbstractCRUDControllerWithRest;
 
@@ -27,7 +29,22 @@ public class PersistenceTest extends AbstractCRUDControllerWithRest {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[]{json(loadResource("/metadata/user.json", true))};
+        return new JsonNode[]{json(loadResource("/metadata/user.json", true)), json(loadResource("/metadata/helicopter.json", true))};
+    }
+
+    @Test
+    public void testHelicopterPersistence() {
+        entityManager.getTransaction().begin();
+        Helicopter heli = new Helicopter();
+        heli.setMake("make");
+        heli.setName("name");
+        String id = UUID.randomUUID().toString();
+        heli.setUUID(id);
+        entityManager.persist(heli);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+        
+        System.out.println("helicopter>>>"+entityManager.find(Helicopter.class, id));
     }
 
     private void persist(String id) {

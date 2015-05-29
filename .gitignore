@@ -3,4 +3,4 @@
 .project
 target
 transaction.log
-
+com.redhat.lightblue.*
