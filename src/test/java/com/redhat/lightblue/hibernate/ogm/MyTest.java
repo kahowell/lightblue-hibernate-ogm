@@ -12,36 +12,41 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.ogm.utils.OgmTestCase;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.expression.query.Query;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
-import com.redhat.lightblue.hibernate.ogm.LightblueOgmJUnitRunner.LightblueTestMethods;
+import com.redhat.lightblue.hibernate.ogm.LightblueExternalResource.LightblueTestMethods;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
 
-public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTestMethods {
+public class MyTest extends OgmTestCase {
 
-    private LightblueClient client;
+    @ClassRule
+    public static LightblueExternalResource lightblue = new LightblueExternalResource(new LightblueTestMethods() {
 
-    @Override
-    public void setLightblueClient(LightblueClient client) {
-        this.client = client;
-    }
+        @Override
+        public JsonNode[] getMetadataJsonNodes() throws Exception {
+            return new JsonNode[]{
+                    loadJsonNode("./metadata/user.json")
+            };
+        }
 
-    @Override
-    public JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[]{
-                loadJsonNode("./metadata/user.json")
-        };
-    }
+    });
 
     @Override
     protected Class<?>[] getAnnotatedClasses() {
         return new Class<?>[]{
                 User.class
         };
+    }
+
+    @Before
+    public void before() {
+        lightblue.getLightblueClient();
     }
 
     @Test
@@ -88,9 +93,8 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
     }
 
     private int getNumberOfEntities() throws Exception {
-        JsonNode userMetadata = getMetadataJsonNodes()[0].get("schema");
-        String metadataVersion = userMetadata.get("version").get("value").asText();
-        String metadataType = userMetadata.get("name").asText();
+        String metadataVersion = "1.0.0";
+        String metadataType = "user";
         DataFindRequest request = new DataFindRequest(metadataType, metadataVersion);
         List<Query> conditions = new ArrayList<Query>();
         conditions.add(withValue("firstName = frank"));
@@ -100,7 +104,7 @@ public class MyTest extends AbstractLightblueOgmTestCase implements LightblueTes
         request.where(and(conditions));
         request.select(includeFieldRecursively("*"));
 
-        User[] users = client.data(request, User[].class);
+        User[] users = lightblue.getLightblueClient().data(request, User[].class);
 
         return users.length;
     }
