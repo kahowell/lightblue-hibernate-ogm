@@ -87,7 +87,11 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
         List<Projection> projections = new ArrayList<Projection>(Arrays.asList(projectionsFromColumns(tupleContext.getSelectableColumns())));
         projections.add(new FieldProjection("_id", true, true));
         request.select(projections);
-        return (ObjectNode) provider.getLightblueClient().data(request).getJson().get("processed").get(0);
+        LightblueResponse response = provider.getLightblueClient().data(request);
+        if (response.hasError()) {
+            throw new RuntimeException("Error returned in response: " + response.getText());
+        }
+        return (ObjectNode) response.getJson().get("processed").get(0);
     }
 
     private Projection[] projectionsFromColumns(Collection<String> columns) {

@@ -2,7 +2,6 @@ package com.redhat.lightblue.hibernate.ogm;
 
 import java.util.List;
 
-import org.hibernate.ogm.utils.OgmTestRunner;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -11,6 +10,7 @@ import org.junit.ClassRule;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
 import org.junit.rules.TestRule;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
@@ -20,32 +20,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.integration.test.AbstractLightblueClientCRUDController;
 
-/**
- * A rough cut of an idea what would allow Lightblue to execute as a JUnit runner rather
- * than using inheritance. I expect this will be cleaned up and ultimately live some place
- * else, but for now this will work.
- *
- * @author dcrissman
- */
-public class LightblueOgmJUnitRunner extends OgmTestRunner {
+public class LightblueJUnitRunner extends BlockJUnit4ClassRunner {
 
     private ArtificialCRUDControllerWithRest controller;
 
     private Object testInstance = null;
     private final TestClass controllerTestClass;
 
-    /**
-     * Test case should implement this interface.
-     *
-     * @author dcrissman
-     */
     public interface LightblueTestMethods {
         void setLightblueClient(LightblueClient client);
 
         JsonNode[] getMetadataJsonNodes() throws Exception;
     }
 
-    public LightblueOgmJUnitRunner(Class<?> klass) throws InitializationError {
+    public LightblueJUnitRunner(Class<?> klass) throws InitializationError {
         super(klass);
         controllerTestClass = new TestClass(ArtificialCRUDControllerWithRest.class);
     }

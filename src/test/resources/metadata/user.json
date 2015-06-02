@@ -1,6 +1,7 @@
 {
     "entityInfo": {
         "name": "user",
+        "defaultVersion": "1.0.0",
         "datastore": {
             "backend":"mongo",
             "collection": "user",

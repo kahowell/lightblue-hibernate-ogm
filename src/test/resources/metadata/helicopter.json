@@ -1,6 +1,7 @@
 {
     "entityInfo": {
         "name": "helicopter",
+        "defaultVersion": "1.0.0",
         "datastore": {
             "backend":"mongo",
             "collection": "helicopter",
