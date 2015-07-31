@@ -29,8 +29,8 @@ public class PersistenceTest extends AbstractLightblueClientCRUDController {
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
         return new JsonNode[]{
-                loadJsonNode("/metadata/user.json"), 
-                loadJsonNode("/metadata/helicopter.json")
+                loadJsonNode("./metadata/user.json"), 
+                loadJsonNode("./metadata/helicopter.json")
         };
     }
 
