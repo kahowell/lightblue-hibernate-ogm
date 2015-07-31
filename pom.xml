@@ -48,14 +48,14 @@
     <dependency>
       <groupId>com.redhat.lightblue.client</groupId>
       <artifactId>lightblue-client-http</artifactId>
-      <version>1.5.0-SNAPSHOT</version>
+      <version>1.6.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Test Dependencies -->
     <dependency>
       <groupId>com.redhat.lightblue.client</groupId>
       <artifactId>lightblue-client-integration-test</artifactId>
-      <version>1.5.0-SNAPSHOT</version>
+      <version>1.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
