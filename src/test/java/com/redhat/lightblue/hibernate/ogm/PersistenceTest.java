@@ -1,6 +1,6 @@
 package com.redhat.lightblue.hibernate.ogm;
 
-import static com.redhat.lightblue.util.JsonUtils.json;
+import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -28,7 +28,10 @@ public class PersistenceTest extends AbstractLightblueClientCRUDController {
 
     @Override
     protected JsonNode[] getMetadataJsonNodes() throws Exception {
-        return new JsonNode[]{json(loadResource("/metadata/user.json", true)), json(loadResource("/metadata/helicopter.json", true))};
+        return new JsonNode[]{
+                loadJsonNode("/metadata/user.json"), 
+                loadJsonNode("/metadata/helicopter.json")
+        };
     }
 
     @Test

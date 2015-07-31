@@ -44,6 +44,7 @@ import com.redhat.lightblue.client.request.data.DataDeleteRequest;
 import com.redhat.lightblue.client.request.data.DataFindRequest;
 import com.redhat.lightblue.client.request.data.DataInsertRequest;
 import com.redhat.lightblue.client.request.data.DataSaveRequest;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 import com.redhat.lightblue.hibernate.ogm.LightblueTupleSnapshot.OperationType;
 
@@ -87,11 +88,15 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
         List<Projection> projections = new ArrayList<Projection>(Arrays.asList(projectionsFromColumns(tupleContext.getSelectableColumns())));
         projections.add(new FieldProjection("_id", true, true));
         request.select(projections);
-        LightblueResponse response = provider.getLightblueClient().data(request);
-        if (response.hasError()) {
-            throw new RuntimeException("Error returned in response: " + response.getText());
+        try {
+            LightblueResponse response = provider.getLightblueClient().data(request);
+            if (response.hasError()) {
+                throw new RuntimeException("Error returned in response: " + response.getText());
+            }
+            return (ObjectNode) response.getJson().get("processed").get(0);
+        } catch (LightblueException e) {
+            throw new RuntimeException("Unable to communicate with lightblue.", e);
         }
-        return (ObjectNode) response.getJson().get("processed").get(0);
     }
 
     private Projection[] projectionsFromColumns(Collection<String> columns) {
@@ -116,16 +121,16 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
             DataInsertRequest request = new DataInsertRequest(snapshot.entityName, snapshot.entityVersion);
             request.create(snapshot.getNode());
             request.returns(new FieldProjection("_id", true, true));
-            System.out.println(snapshot.getNode());
-            System.out.println(provider.getLightblueClient().data(request).getJson());
+            //System.out.println(snapshot.getNode());
+            //System.out.println(provider.getLightblueClient().data(request).getJson());
         }
         else {
             DataSaveRequest request = new DataSaveRequest(snapshot.entityName, snapshot.entityVersion);
             request.create(snapshot.getNode());
             request.returns(projectionsFromColumns(snapshot.getColumnNames()));
             request.setUpsert(false);
-            System.out.println(request.getBody());
-            System.out.println(provider.getLightblueClient().data(request).getJson());
+            //System.out.println(request.getBody());
+            //System.out.println(provider.getLightblueClient().data(request).getJson());
         }
     }
 
@@ -192,35 +197,40 @@ public class LightblueDialect extends BaseGridDialect implements QueryableGridDi
                 return queryString;
             }
         });
-        JsonNode jsonNode = provider.getLightblueClient().data(request).getJson().get("processed");
-        List<Tuple> tuples = new ArrayList<Tuple>(jsonNode.size());
-        for (int i = 0; i < jsonNode.size(); i++) {
-            tuples.add(tupleFromNode((ObjectNode) jsonNode.get(i), entityName, entityVersion));
+        JsonNode jsonNode;
+        try {
+            jsonNode = provider.getLightblueClient().data(request).getJson().get("processed");
+            List<Tuple> tuples = new ArrayList<Tuple>(jsonNode.size());
+            for (int i = 0; i < jsonNode.size(); i++) {
+                tuples.add(tupleFromNode((ObjectNode) jsonNode.get(i), entityName, entityVersion));
+            }
+            final Iterator<Tuple> iter = tuples.iterator();
+            return new ClosableIterator<Tuple>() {
+    
+                @Override
+                public Tuple next() {
+                    return iter.next();
+                }
+    
+                @Override
+                public boolean hasNext() {
+                    return iter.hasNext();
+                }
+    
+                @Override
+                public void close() {
+                    // NO-OP
+                }
+    
+                @Override
+                public void remove() {
+                    // TODO Auto-generated method stub
+    
+                }
+            };
+        } catch (LightblueException e) {
+            throw new RuntimeException("Error while communicating with lightblue.", e);
         }
-        final Iterator<Tuple> iter = tuples.iterator();
-        return new ClosableIterator<Tuple>() {
-
-            @Override
-            public Tuple next() {
-                return iter.next();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return iter.hasNext();
-            }
-
-            @Override
-            public void close() {
-                // NO-OP
-            }
-
-            @Override
-            public void remove() {
-                // TODO Auto-generated method stub
-
-            }
-        };
     }
 
     private Tuple tupleFromNode(ObjectNode objectNode, String entityName, String entityVersion) {

@@ -7,6 +7,7 @@ import org.junit.runners.model.TestClass;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.redhat.lightblue.client.LightblueClient;
 import com.redhat.lightblue.client.integration.test.AbstractLightblueClientCRUDController;
+import com.redhat.lightblue.client.response.LightblueException;
 import com.redhat.lightblue.client.response.LightblueResponse;
 
 public class LightblueExternalResource extends BeforeAfterTestRule {
@@ -51,7 +52,7 @@ public class LightblueExternalResource extends BeforeAfterTestRule {
         return getControllerInstance().getLightblueClient();
     }
 
-    public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException {
+    public LightblueResponse loadData(String entityName, String entityVersion, String resourcePath) throws IOException, LightblueException {
         return getControllerInstance().loadData(entityName, entityVersion, resourcePath);
     }
 
