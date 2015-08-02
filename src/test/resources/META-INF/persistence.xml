@@ -13,7 +13,7 @@
             <property name="hibernate.transaction.jta.platform"
                       value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform"/>
             <property name="hibernate.ogm.datastore.host" value="localhost"/>
-            <property name="hibernate.ogm.datastore.port" value="8080"/>
+            <property name="hibernate.ogm.datastore.port" value="8000"/>
             <property name="com.redhat.lightblue.protocol" value="http"/>
         </properties>
     </persistence-unit>

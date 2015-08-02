@@ -1,5 +1,6 @@
 package com.redhat.lightblue.hibernate.ogm;
 
+import static com.redhat.lightblue.util.test.AbstractJsonNodeTest.loadJsonNode;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -11,17 +12,44 @@ import javax.persistence.Persistence;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.redhat.lightblue.client.integration.test.AbstractLightblueClientCRUDController;
+import com.redhat.lightblue.hibernate.ogm.test.model.Helicopter;
 import com.redhat.lightblue.hibernate.ogm.test.model.User;
 
-public class PersistenceTest {
+public class PersistenceTest extends AbstractLightblueClientCRUDController {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("lightblue.jpa");
-    private EntityManager entityManager = entityManagerFactory.createEntityManager();
+    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-    public void persist(String id) {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
+    public PersistenceTest() throws Exception {
+        super();
+    }
+
+    @Override
+    protected JsonNode[] getMetadataJsonNodes() throws Exception {
+        return new JsonNode[]{
+                loadJsonNode("./metadata/user.json"), 
+                loadJsonNode("./metadata/helicopter.json")
+        };
+    }
+
+    @Test
+    public void testHelicopterPersistence() {
+        entityManager.getTransaction().begin();
+        Helicopter heli = new Helicopter();
+        heli.setMake("make");
+        heli.setName("name");
+        String id = UUID.randomUUID().toString();
+        heli.setUUID(id);
+        entityManager.persist(heli);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+
+        System.out.println("helicopter>>>" + entityManager.find(Helicopter.class, id));
+    }
+
+    private void persist(String id) {
         entityManager.getTransaction().begin();
         User user = new User();
         user.setFirstName("bob");
@@ -33,34 +61,46 @@ public class PersistenceTest {
         entityManager.getTransaction().commit();
     }
 
-    private User fetch() {
-        User user = entityManager.find(User.class, "foo");
+    private User fetch(String id) {
+        User user = entityManager.find(User.class, id);
         return user;
     }
 
     @Test
     public void testPersistence() {
-        persist(null);
+        String id = UUID.randomUUID().toString();
+        persist(id);
     }
 
     @Test
     public void testRetrieval() {
         entityManager.getTransaction().begin();
-        User user = fetch();
-        assertEquals("bob", user.getFirstName());
-        User b = entityManager.find(User.class, "546feb01e4b0c4747d300299");
+        String id = UUID.randomUUID().toString();
+        User user = new User();
+        user.setFirstName("bob");
+        user.setUserId(id);
+        user.setLogin("root");
+        user.setNumberSites(3);
+        entityManager.persist(user);
+        entityManager.flush();
+        User user2 = entityManager.find(User.class, id);
+        assertEquals("bob", user2.getFirstName());
         entityManager.getTransaction().commit();
     }
 
     @Test
     public void testRetrieval_outsideSession() {
-        User user = fetch();
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = fetch(id);
         assertEquals("bob", user.getFirstName());
     }
 
     @Test
     public void testDeletion() {
-        User user = fetch();
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = entityManager.find(User.class, id);
         entityManager.remove(user);
     }
 
@@ -70,18 +110,24 @@ public class PersistenceTest {
         System.out.println(resultList);
     }
 
-    @Test
+    //@Test
     public void queryTest_jpql() {
         entityManager.createQuery("select user from User user where user.login = 'bserdar'").getResultList();
     }
 
     @Test
     public void testUpdate() {
+        String id = UUID.randomUUID().toString();
+        persist(id);
+        User user = fetch(id);
+        assertEquals("root", user.getLogin());
         entityManager.getTransaction().begin();
-        User user = fetch();
         user.setLogin(user.getLogin() + "!");
         entityManager.persist(user);
         entityManager.flush();
         entityManager.getTransaction().commit();
+        user = fetch(id);
+        assertEquals("root!", user.getLogin());
     }
+
 }

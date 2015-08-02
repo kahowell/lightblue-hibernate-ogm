@@ -1,0 +1,20 @@
+language: java
+jdk:
+- openjdk7
+- oraclejdk8
+before_install:
+- cp ./etc/settings.xml ~/.m2/
+- cp ./etc/onFailure.sh  ~/
+- cp ./etc/onSuccess.sh  ~/
+- chmod 777 ~/onFailure.sh
+- chmod 777 ~/onSuccess.sh
+script:
+- mvn -B clean verify
+after_failure: ~/onFailure.sh
+after_success: ~/onSuccess.sh
+after_script:
+- mvn -B cobertura:cobertura coveralls:report
+env:
+  global:
+  - secure: xoe4z+iXyz7zEcovpukNK01Tmj6uBB9qYBbZ0Z7GPgGcrSWFIFvikjG3PHgttTmgYMOt7sc4K3B9ChzP7FRRLIt+Yulk3HF1eJiqbZa4liUFpghiKKqgCFu5ST/cuYcWsZzxaHnlpmyzhD4VG86cb/3n+5J3vln2wSwsCKsKCRI=
+  - secure: OTUwUbIo3nnadqhjw+TsbYXjk2S3brZZP4shQplySe3hhSUFn5Crga6OtOF4PtVwwB4AkYx0hWxX66jd9zt4Irui8I7Bp9aDeu0K/xhkxM9tAxFpawOR1BY07A9iu9gdTpItSmP55A0zwHfWTa2/n9lhHVHCx3NODqDdwPdGGK4=

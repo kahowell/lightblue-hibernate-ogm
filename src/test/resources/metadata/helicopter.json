@@ -1,0 +1,32 @@
+{
+    "entityInfo": {
+        "name": "helicopter",
+        "defaultVersion": "1.0.0",
+        "datastore": {
+            "backend":"mongo",
+            "collection": "helicopter",
+            "datasource": "${mongo.datasource}"
+        }
+    },
+    "schema": {
+        "name": "helicopter",
+        "version": {
+            "value": "1.0.0",
+            "changelog": "blahblah"
+        },
+        "status": {
+            "value": "active"
+        },
+        "access" : {
+             "insert": ["anyone"],
+             "update": ["anyone"],
+             "delete": ["anyone"],
+             "find": ["anyone"]
+        },
+        "fields": {
+            "uuid": {"type": "string"},
+            "name": {"type": "string"},
+            "make": {"type": "string"}
+        }
+    }
+}
